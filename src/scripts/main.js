@@ -5,36 +5,26 @@ const averageElem = document.querySelector('.average-population');
 const totalElem = document.querySelector('.total-population');
 const populations = [];
 
-function addCommas(arr, separateAmount = 3) {
-  const newArr = [];
-
-  for (let i = 0; i < arr.length; i++) {
-    const position = arr.length - i - 1;
-
-    newArr.push(arr[i]);
-
-    if (position % 3 === 0 && position !== 0) {
-      newArr.push(',');
-    }
-  }
-
-  return newArr.join('');
-}
-
 allPopulationsQuery.forEach((elem) => {
   populations.push(elem.innerText);
 });
 
-let totalPopulation = populations.reduce(
-  (sum, elem) => sum + Number(elem.replaceAll(',', '')),
-  0,
-);
+let totalPopulation = populations.reduce((sum, elem) => {
+  const changedElem = Number(elem.replaceAll(',', ''));
+
+  if (Number.isFinite(changedElem)) {
+    return sum + changedElem;
+  }
+
+  return sum;
+}, 0);
+
 let averagePopulation = Math.floor(
   totalPopulation / allPopulationsQuery.length,
 );
 
-totalPopulation = totalPopulation.toString().split('');
-averagePopulation = averagePopulation.toString().split('');
+averagePopulation = new Intl.NumberFormat().format(averagePopulation);
+totalPopulation = new Intl.NumberFormat().format(totalPopulation);
 
-averageElem.innerText = addCommas(averagePopulation);
-totalElem.innerText = addCommas(totalPopulation);
+averageElem.innerText = averagePopulation;
+totalElem.innerText = totalPopulation;
